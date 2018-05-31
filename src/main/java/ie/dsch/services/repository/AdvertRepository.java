@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface AdvertRepository extends MongoRepository<Advert, String> {
-
+    Advert findOneById(String id);
 }

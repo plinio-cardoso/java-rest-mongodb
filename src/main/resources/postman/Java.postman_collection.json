@@ -1,0 +1,100 @@
+{
+	"info": {
+		"name": "Java Workshop",
+		"_postman_id": "6c5eb2c7-f570-6439-4813-45645f28c9eb",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Create Advert",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"title\": \"Test\",\n\t\"description\": \"teasdasd\",\n\t\"price\": 19000.00\n}"
+				},
+				"url": {
+					"raw": "{{host}}/{{version}}/adverts",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"{{version}}",
+						"adverts"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Adverts",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "{{host}}/{{version}}/adverts",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"{{version}}",
+						"adverts"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Get Advert By ID",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "{{host}}/{{version}}/adverts/5b0fc73fb3e4122b465cdbfa",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"{{version}}",
+						"adverts",
+						"5b0fc73fb3e4122b465cdbfa"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Advert By ID",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "{{host}}/{{version}}/adverts/5b0fc73fb3e4122b465cdbfa",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"{{version}}",
+						"adverts",
+						"5b0fc73fb3e4122b465cdbfa"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}
