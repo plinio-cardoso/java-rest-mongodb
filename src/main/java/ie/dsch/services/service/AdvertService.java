@@ -3,6 +3,7 @@ package ie.dsch.services.service;
 import ie.dsch.services.model.Advert;
 import ie.dsch.services.repository.AdvertRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,7 +17,7 @@ public class AdvertService {
         return advertRepository.findAll();
     }
 
-    public Advert createAdvert(Advert advert) {
-        return advertRepository.save(advert);
+    public void createAdvert(Advert advert) {
+        advertRepository.save(advert);
     }
 }
