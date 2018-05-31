@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/v1/adverts")
@@ -22,8 +23,14 @@ public class AdvertController {
 
     @GetMapping("/{id}")
     @ApiOperation(value = "Retrieves a specific advert", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Advert retrieveAdvert(@PathVariable(name = "id") String id) {
-        return advertService.findOne(id);
+    public ResponseEntity<Advert> retrieveAdvert(@PathVariable(name = "id") String id) {
+        Advert advert = advertService.findOne(id);
+
+        if (advert == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(advert);
     }
 
     @GetMapping
