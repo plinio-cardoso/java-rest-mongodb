@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -41,7 +42,11 @@ public class AdvertController {
 
     @PostMapping
     @ApiOperation(value = "Creates an advert", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity createAdvert(@Valid @RequestBody Advert advert) {
+    public ResponseEntity createAdvert(@Valid @RequestBody Advert advert, BindingResult result) {
+        if (result.hasErrors()) {
+            return ResponseEntity.badRequest().body(result.getAllErrors());
+        }
+
         advertService.createOrUpdateAdvert(advert);
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
@@ -57,7 +62,11 @@ public class AdvertController {
 
     @PutMapping
     @ApiOperation(value = "Updates a specific advert", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity updateVariable(@Valid @RequestBody Advert advert) {
+    public ResponseEntity updateVariable(@Valid @RequestBody Advert advert, BindingResult result) {
+        if (result.hasErrors()) {
+            return ResponseEntity.badRequest().body(result.getAllErrors());
+        }
+
         advertService.createOrUpdateAdvert(advert);
 
         return ResponseEntity.status(HttpStatus.OK).build();
