@@ -20,7 +20,7 @@ public class AdvertService {
         return advertRepository.findOneById(id);
     }
 
-    public void createAdvert(Advert advert) {
+    public void createOrUpdateAdvert(Advert advert) {
         advertRepository.save(advert);
     }
 

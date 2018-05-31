@@ -79,15 +79,15 @@ public class AdvertServiceTests {
     }
 
     @Test
-    public void createAdvert() {
-       Advert advert = Advert.builder()
-               .title(this.ADVERT_TITLE)
-               .description(this.ADVERT_DESCRIPTION)
-               .price(this.ADVERT_PRICE)
-               .build();
+    public void createOrUpdateAdvert() {
+        Advert advert = Advert.builder()
+                .title(this.ADVERT_TITLE)
+                .description(this.ADVERT_DESCRIPTION)
+                .price(this.ADVERT_PRICE)
+                .build();
 
         when(advertRepository.save(advert)).thenReturn(advert);
 
-        advertService.createAdvert(advert);
+        advertService.createOrUpdateAdvert(advert);
     }
 }
