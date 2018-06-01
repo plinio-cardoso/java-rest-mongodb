@@ -25,11 +25,11 @@ public class UserServiceTests {
     private final String GENDER = "male";
     private final String IP_ADDRESS = "1.2.3.4";
     private User user = User.builder()
-            .firstName(FIRST_NAME)
-            .lastName(LAST_NAME)
+            .first_name(FIRST_NAME)
+            .last_name(LAST_NAME)
             .email(EMAIL)
             .gender(GENDER)
-            .ipAddress(IP_ADDRESS)
+            .ip_address(IP_ADDRESS)
             .build();
     private List<User> users = new ArrayList<>();
         
