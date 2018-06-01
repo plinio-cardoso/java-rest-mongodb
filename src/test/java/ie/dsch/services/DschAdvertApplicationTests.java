@@ -1,4 +1,4 @@
-package ie.dsch.services.application;
+package ie.dsch.services;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
