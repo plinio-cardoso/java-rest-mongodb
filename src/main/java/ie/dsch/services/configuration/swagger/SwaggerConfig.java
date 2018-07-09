@@ -1,4 +1,4 @@
-package ie.dsch.services.application.swagger;
+package ie.dsch.services.configuration.swagger;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
