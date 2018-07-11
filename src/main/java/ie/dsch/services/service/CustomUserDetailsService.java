@@ -23,7 +23,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        ApplicationUser applicationUser = loadApplicationUserByUsername(username);
+        ApplicationUser applicationUser = userRepository.findByUsername(username);
 
         return new User(
                 applicationUser.getUsername(),
@@ -32,11 +32,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         );
     }
 
-    public ApplicationUser loadApplicationUserByUsername(String username) {
-        return userRepository.findByUsername(username);
-    }
-
-    public ApplicationUser createUser(ApplicationUser user) throws Exception {
+    public void createUser(ApplicationUser user) throws Exception {
         if (userRepository.existsByUsername(user.getUsername())) {
             throw new Exception("There is an account with that username: " + user.getUsername());
         }
@@ -48,8 +44,6 @@ public class CustomUserDetailsService implements UserDetailsService {
         } catch (DataIntegrityViolationException e) {
             throw new Exception(e.getMessage());
         }
-
-        return user;
     }
 
     public List<ApplicationUser> getUsers() {

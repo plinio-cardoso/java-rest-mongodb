@@ -74,8 +74,11 @@ public class JwtTokenProvider {
         String username = this.getUsernameFromToken(token);
 
         UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);
-        ApplicationUser applicationUser = customUserDetailsService.loadApplicationUserByUsername(username);
 
-        return userDetails !=  null? new UsernamePasswordAuthenticationToken(applicationUser, null, userDetails.getAuthorities()) : null;
+        if (userDetails != null) {
+            return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+        }
+
+        return null;
     }
 }
