@@ -1,12 +1,8 @@
 package ie.dsch.services.security;
 
-import ie.dsch.services.model.ApplicationUser;
-import ie.dsch.services.service.CustomUserDetailsService;
-import io.jsonwebtoken.Jwts;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 import javax.servlet.FilterChain;
@@ -15,42 +11,29 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static ie.dsch.services.security.SecurityConstant.*;
-
 public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
-    private final CustomUserDetailsService customUserDetailsService;
+    private JwtTokenProvider jwtTokenProvider;
 
-    public JwtAuthorizationFilter(AuthenticationManager authenticationManager, CustomUserDetailsService customUserDetailsService) {
+    public JwtAuthorizationFilter(
+            AuthenticationManager authenticationManager,
+            JwtTokenProvider jwtTokenProvider
+    ) {
         super(authenticationManager);
-        this.customUserDetailsService = customUserDetailsService;
+        this.jwtTokenProvider = jwtTokenProvider;
     }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
-        String header = request.getHeader(HEADER_STRING);
-        if (header == null || !header.startsWith(TOKEN_PREFIX)) {
+        String header = request.getHeader(jwtTokenProvider.getHeaderString());
+
+        if (header == null || !header.startsWith(jwtTokenProvider.getTokenPrefix())) {
             chain.doFilter(request, response);
             return;
         }
 
-        UsernamePasswordAuthenticationToken usernamePasswordAuth = getAuthenticationToken(request);
+        UsernamePasswordAuthenticationToken usernamePasswordAuth = jwtTokenProvider.getAuthenticationToken(request);
+
         SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuth);
         chain.doFilter(request, response);
-    }
-
-    private UsernamePasswordAuthenticationToken getAuthenticationToken(HttpServletRequest request) {
-        String token = request.getHeader(HEADER_STRING);
-
-        if(token == null) return null;
-
-        String username = Jwts.parser().setSigningKey(SECRET)
-                .parseClaimsJws(token.replace(TOKEN_PREFIX, ""))
-                .getBody()
-                .getSubject();
-
-        UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);
-        ApplicationUser applicationUser = customUserDetailsService.loadApplicationUserByUsername(username);
-
-        return userDetails !=  null? new UsernamePasswordAuthenticationToken(applicationUser, null, userDetails.getAuthorities()) : null;
     }
 }

@@ -13,10 +13,13 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final CustomUserDetailsService customUserDetailsService;
 
-    public SecurityConfig(CustomUserDetailsService customUserDetailsService) {
+    @Autowired
+    private JwtTokenProvider jwtTokenProvider;
+
+    public WebSecurityConfig(CustomUserDetailsService customUserDetailsService) {
         this.customUserDetailsService = customUserDetailsService;
     }
 
@@ -33,8 +36,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST, "/*/users*//**").hasRole("ADMIN")
                 .antMatchers(HttpMethod.GET, "/*/users*//**").hasAnyRole("ADMIN, AGENT")
                 .and()
-                .addFilter(new JwtAuthenticationFilter(authenticationManager()))
-                .addFilter(new JwtAuthorizationFilter(authenticationManager(), customUserDetailsService));
+                .addFilter(new JwtAuthenticationFilter(authenticationManager(), jwtTokenProvider))
+                .addFilter(new JwtAuthorizationFilter(authenticationManager(), jwtTokenProvider));
     }
 
     @Autowired

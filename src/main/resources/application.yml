@@ -1,0 +1,15 @@
+server:
+  port: 8082
+spring:
+  data:
+    mongodb:
+      host: 127.0.0.1
+      port: 27017
+      database: javaworkshop
+security:
+  jwt:
+    token:
+      secret-key: 8128c396e23c539c91053abc06cbd3a51e25ceba
+      token-prefix: Bearer
+      header-string: Authorization
+      expire-length: 60

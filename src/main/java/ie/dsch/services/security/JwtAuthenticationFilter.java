@@ -2,10 +2,7 @@ package ie.dsch.services.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import ie.dsch.services.model.ApplicationUser;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.User;
@@ -16,25 +13,23 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.sql.Date;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
-import java.time.temporal.ChronoUnit;
-
-import static ie.dsch.services.security.SecurityConstant.*;
 
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private AuthenticationManager authenticationManager;
 
-    public JwtAuthenticationFilter(AuthenticationManager authenticationManager) {
+    private JwtTokenProvider jwtTokenProvider;
+
+    public JwtAuthenticationFilter(AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider) {
         this.authenticationManager = authenticationManager;
+        this.jwtTokenProvider = jwtTokenProvider;
     }
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         try {
             ApplicationUser applicationUser = new ObjectMapper().readValue(request.getInputStream(), ApplicationUser.class);
-            return authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(applicationUser.getUsername(), applicationUser.getPassword()));
+
+            return authenticationManager.authenticate(jwtTokenProvider.authenticationTokenFactory(applicationUser));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -42,13 +37,10 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
-        ZonedDateTime expirationTimeUTC = ZonedDateTime.now(ZoneOffset.UTC).plus(EXPIRATION_TIME, ChronoUnit.MILLIS);
-        String token = Jwts.builder().setSubject(((User)authResult.getPrincipal()).getUsername())
-                .setExpiration(Date.from(expirationTimeUTC.toInstant()))
-                .signWith(SignatureAlgorithm.HS512, SECRET)
-                .compact();
+        User user = (User)authResult.getPrincipal();
+        String token = jwtTokenProvider.createToken(user.getUsername());
 
         response.getWriter().write(token);
-        response.addHeader(HEADER_STRING, TOKEN_PREFIX + token);
+        response.addHeader(jwtTokenProvider.getHeaderString(), jwtTokenProvider.getHeaderToken(token));
     }
 }
