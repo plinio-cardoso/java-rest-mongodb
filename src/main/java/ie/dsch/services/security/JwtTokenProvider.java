@@ -37,15 +37,12 @@ public class JwtTokenProvider {
     private final CustomUserDetailsService customUserDetailsService;
 
     public String createToken(String username) {
-
         ZonedDateTime expirationTimeUTC = ZonedDateTime.now(ZoneOffset.UTC).plus(validityInMinutes, ChronoUnit.MINUTES);
 
-        String token = Jwts.builder().setSubject(username)
+        return Jwts.builder().setSubject(username)
                 .setExpiration(Date.from(expirationTimeUTC.toInstant()))
                 .signWith(SignatureAlgorithm.HS512, secretKey)
                 .compact();
-
-        return token;
     }
 
     public UsernamePasswordAuthenticationToken authenticationTokenFactory(ApplicationUser applicationUser) {
@@ -72,7 +69,6 @@ public class JwtTokenProvider {
         if(token == null) return null;
 
         String username = this.getUsernameFromToken(token);
-
         UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);
 
         if (userDetails != null) {
