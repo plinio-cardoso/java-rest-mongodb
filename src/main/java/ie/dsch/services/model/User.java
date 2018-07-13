@@ -8,12 +8,12 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Getter
-@Setter
 @Document(collection = "users")
 public class User {
     @Id
     private String id;
+    private String username;
+    private String password;
     private String first_name;
     private String last_name;
     private String email;

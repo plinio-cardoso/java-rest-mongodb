@@ -18,6 +18,7 @@ import java.util.List;
 @RequestMapping("/v1/adverts")
 @Api(value = "Adverts", description = "Advert Controller")
 public class AdvertController {
+
     @Autowired
     AdvertService advertService;
 
